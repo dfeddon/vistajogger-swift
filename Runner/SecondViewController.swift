@@ -27,7 +27,7 @@ class SecondViewController: UIViewController {
         map.setRegion(region, animated: true)
         
         var annotation = MKPointAnnotation()
-        annotation.setCoordinate(location)
+        annotation.coordinate = location//setCoordinate(location)
         annotation.title = "Madison"
         annotation.subtitle = "Wisconsin!"
         
