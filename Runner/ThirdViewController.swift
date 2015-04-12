@@ -45,42 +45,57 @@ class ThirdViewController: UIViewController
             kABPersonAddressStateKey: "NY",
             kABPersonAddressZIPKey: "10001"
         ]
-        //let sourcePlacemark:MKPlacemark = MKPlacemark()
-        let sourcePlacemark = MKPlacemark(coordinate: initialLocation, addressDictionary: addressDict)//
         
-        //initialLocation.coordinate//.latitude = 28.308268
-        //sourcePlacemark.coordinate.longitude = -81.549415
+        let sourcePlacemark = MKPlacemark(coordinate: initialLocation, addressDictionary: addressDict)//
         let sm:MKMapItem = MKMapItem(placemark: sourcePlacemark) as MKMapItem
         request.setSource(sm )
         
         let destinationPlacemark = MKPlacemark(coordinate: destinationLocation, addressDictionary: addressDict2)
-//        let destinationPlacemark:MKPlacemark()
-//        destinationPlacemark.coordinate.latitude = 28.308268
-//        destinationPlacemark.coordinate.longitude = -81.549415
         let dm:MKMapItem = MKMapItem(placemark: destinationPlacemark)
         request.setDestination(dm)
         
         let directions = MKDirections(request: request)
-        directions.calculateDirectionsWithCompletionHandler{
-                                    (response: MKDirectionsResponse!, error: NSError!) in
-            
-            /* You can manually parse the response, but in
-                                    here we will take a shortcut and use the Maps app
-                                    to display our source and
-                                    destination. We didn't have to make this API call at all,
-                                    as we already had the map items before, but this is to
-                                    demonstrate that the directions response contains more
-                                    information than just the source and the destination. */
-            
-                                    /* Display the directions on the Maps app */
-                                    let launchOptions = [
-                                        MKLaunchOptionsDirectionsModeKey:
-                                    MKLaunchOptionsDirectionsModeDriving]
-            
-                                    MKMapItem.openMapsWithItems(
-                                        [response.source, response.destination],
-                                        launchOptions: launchOptions)
-        }
+        directions.calculateDirectionsWithCompletionHandler(
+            {(response: MKDirectionsResponse!, error: NSError!) in
+                
+                // get default route
+                let route: MKRoute = response!.routes[0] as! MKRoute
+                // get distance
+                let distance:NSString = route.distance.description
+                // convert distance to float
+                let distanceFloat:Float = (distance as NSString).floatValue
+                // convert raw distance to miles
+                let distanceInMiles:Float = distanceFloat / 1609
+                
+                println("Runner will complete the trip in \(distanceInMiles) miles")
+                
+//                for r in response.routes
+//                {
+//                    println("route = \(r)")
+//                    var distance = MKRoute(r).geoRoute.distance
+//                }
+                
+                /* You can manually parse the response, but in
+                here we will take a shortcut and use the Maps app
+                to display our source and
+                destination. We didn't have to make this API call at all,
+                as we already had the map items before, but this is to
+                demonstrate that the directions response contains more
+                information than just the source and the destination. */
+                
+                /* Display the directions on the Maps app */
+                
+                // FIXME: - if distance is below threshold, switch from Driving to Walking mode
+                
+                let launchOptions =
+                [
+                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                ]
+
+                MKMapItem.openMapsWithItems(
+                    [response!.source, response!.destination],
+                    launchOptions: launchOptions)
+            })
 
     }
     
