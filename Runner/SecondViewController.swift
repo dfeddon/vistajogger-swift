@@ -16,16 +16,19 @@ class SecondViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        //Set the location of the map pin(currently madison)
         var location = CLLocationCoordinate2D(
             latitude: 43.0667,
             longitude: -89.4000
         )
         
+        //I believe these are the zoom level and view location
         var span = MKCoordinateSpanMake(0.5, 0.5)
         var region = MKCoordinateRegion(center: location, span: span)
         
         map.setRegion(region, animated: true)
         
+        //Map pin
         var annotation = MKPointAnnotation()
         annotation.coordinate = location//setCoordinate(location)
         annotation.title = "Madison"
